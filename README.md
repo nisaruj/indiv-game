@@ -1,6 +1,6 @@
 # Indiv Game
 
-Repo will be changed later.
+Repo name will be changed later.
 
 ## Getting Started
 
