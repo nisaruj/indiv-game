@@ -16,6 +16,10 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		[SerializeField] float m_AnimSpeedMultiplier = 1f;
 		[SerializeField] float m_GroundCheckDistance = 0.1f;
 
+		/* Custom Fields */
+		[SerializeField] float m_AirbourneMovementSpeed = 5f;
+		[SerializeField] float m_BeforeJumpSpeedMultiplier = 0.6f;
+
 		Rigidbody m_Rigidbody;
 		Animator m_Animator;
 		bool m_IsGrounded;
@@ -49,6 +53,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			// convert the world relative moveInput vector into a local-relative
 			// turn amount and forward amount required to head in the desired
 			// direction.
+			Vector3 relMove = move;
 			if (move.magnitude > 1f) move.Normalize();
 			move = transform.InverseTransformDirection(move);
 			CheckGroundStatus();
@@ -65,7 +70,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			}
 			else
 			{
-				HandleAirborneMovement();
+				HandleAirborneMovement(relMove);
 			}
 
 			ScaleCapsuleForCrouching(crouch);
@@ -153,11 +158,14 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		}
 
 
-		void HandleAirborneMovement()
+		void HandleAirborneMovement(Vector3 move)
 		{
 			// apply extra gravity from multiplier:
 			Vector3 extraGravityForce = (Physics.gravity * m_GravityMultiplier) - Physics.gravity;
 			m_Rigidbody.AddForce(extraGravityForce);
+
+			// Airborne Control
+			m_Rigidbody.AddForce(new Vector3(move.x * m_AirbourneMovementSpeed, 0, move.z * m_AirbourneMovementSpeed));
 
 			m_GroundCheckDistance = m_Rigidbody.velocity.y < 0 ? m_OrigGroundCheckDistance : 0.01f;
 		}
@@ -169,7 +177,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			if (jump && !crouch && m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Grounded"))
 			{
 				// jump!
-				m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, m_JumpPower, m_Rigidbody.velocity.z);
+				m_Rigidbody.velocity = new Vector3(m_BeforeJumpSpeedMultiplier * m_Rigidbody.velocity.x, m_JumpPower, m_BeforeJumpSpeedMultiplier * m_Rigidbody.velocity.z);
 				m_IsGrounded = false;
 				m_Animator.applyRootMotion = false;
 				m_GroundCheckDistance = 0.1f;
