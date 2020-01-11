@@ -17,7 +17,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		[SerializeField] float m_GroundCheckDistance = 0.1f;
 
 		/* Custom Fields */
-		[SerializeField] float m_AirbourneMovementSpeed = 5f;
+		[SerializeField] float m_AirborneMovementSpeed = 5f;
 		[SerializeField] float m_BeforeJumpSpeedMultiplier = 0.6f;
 
 		Rigidbody m_Rigidbody;
@@ -165,7 +165,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			m_Rigidbody.AddForce(extraGravityForce);
 
 			// Airborne Control
-			m_Rigidbody.AddForce(new Vector3(move.x * m_AirbourneMovementSpeed, 0, move.z * m_AirbourneMovementSpeed));
+			m_Rigidbody.AddForce(new Vector3(move.x * m_AirborneMovementSpeed, 0, move.z * m_AirborneMovementSpeed));
 
 			m_GroundCheckDistance = m_Rigidbody.velocity.y < 0 ? m_OrigGroundCheckDistance : 0.01f;
 		}
