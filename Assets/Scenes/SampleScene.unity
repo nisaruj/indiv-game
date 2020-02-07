@@ -404,8 +404,10 @@ MonoBehaviour:
   m_MoveSpeedMultiplier: 2
   m_AnimSpeedMultiplier: 2
   m_GroundCheckDistance: 0.1
-  m_AirboundMovementSpeed: 5
+  m_AirbourneMovementSpeed: 5
   m_BeforeJumpSpeedMultiplier: 0.6
+  m_SuperJumpMultiplier: 2
+  m_MaxOnGroundTime: 2
 --- !u!136 &276342576
 CapsuleCollider:
   m_ObjectHideFlags: 0
