@@ -19,6 +19,8 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		/* Custom Fields */
 		[SerializeField] float m_AirborneMovementSpeed = 5f;
 		[SerializeField] float m_BeforeJumpSpeedMultiplier = 0.6f;
+		[SerializeField] float m_SuperJumpMultiplier = 2f;
+		[SerializeField] float m_MaxOnGroundTime = 2f;
 
 		Rigidbody m_Rigidbody;
 		Animator m_Animator;
@@ -32,6 +34,11 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		Vector3 m_CapsuleCenter;
 		CapsuleCollider m_Capsule;
 		bool m_Crouching;
+
+		// Custom Variables
+		short jumpCombo = 0;
+		float onGroundTime = 0f;
+		
 
 
 		void Start()
@@ -175,12 +182,21 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		{
 			// check whether conditions are right to allow a jump:
 			if (jump && !crouch && m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Grounded"))
-			{
-				// jump!
-				m_Rigidbody.velocity = new Vector3(m_BeforeJumpSpeedMultiplier * m_Rigidbody.velocity.x, m_JumpPower, m_BeforeJumpSpeedMultiplier * m_Rigidbody.velocity.z);
-				m_IsGrounded = false;
-				m_Animator.applyRootMotion = false;
-				m_GroundCheckDistance = 0.1f;
+			{// jump!
+				onGroundTime = 0;
+				float realJumpPower;
+				if(jumpCombo == 2){
+					jumpCombo = 0;
+					realJumpPower = m_JumpPower * m_SuperJumpMultiplier;
+
+				}else{
+					jumpCombo += 1;
+					realJumpPower = m_JumpPower;
+				}
+				m_Rigidbody.velocity = new Vector3(m_BeforeJumpSpeedMultiplier * m_Rigidbody.velocity.x, realJumpPower, m_BeforeJumpSpeedMultiplier * m_Rigidbody.velocity.z);
+					m_IsGrounded = false;
+					m_Animator.applyRootMotion = false;
+					m_GroundCheckDistance = 0.1f;
 			}
 		}
 
@@ -227,6 +243,13 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 				m_IsGrounded = false;
 				m_GroundNormal = Vector3.up;
 				m_Animator.applyRootMotion = false;
+			}
+		}
+		void Update(){
+			onGroundTime += Time.deltaTime;
+			if(onGroundTime >= m_MaxOnGroundTime){
+				jumpCombo = 0;
+				// onGroundTime = 0;
 			}
 		}
 	}
