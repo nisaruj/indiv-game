@@ -21,6 +21,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		[SerializeField] float m_BeforeJumpSpeedMultiplier = 0.6f;
 		[SerializeField] float m_SuperJumpMultiplier = 2f;
 		[SerializeField] float m_MaxOnGroundTime = 2f;
+		[SerializeField] int m_MaxHP = 5;
 
 		Rigidbody m_Rigidbody;
 		Animator m_Animator;
@@ -38,6 +39,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		// Custom Variables
 		short jumpCombo = 0;
 		float onGroundTime = 0f;
+		int currentHP = 3;
 		
 
 
@@ -250,6 +252,16 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			if(onGroundTime >= m_MaxOnGroundTime){
 				jumpCombo = 0;
 				// onGroundTime = 0;
+			}
+		}
+		void OnCollisionEnter(Collision collision) {
+			if(collision.gameObject.tag == "Enemy"){
+				currentHP = currentHP - 1;
+				if(currentHP <= 0){
+				Debug.Log("Player is dead.");
+				}else {
+				Debug.Log("Player still alive.");
+				}
 			}
 		}
 	}
