@@ -22,6 +22,8 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         [SerializeField] float m_SuperJumpMultiplier = 2f;
         [SerializeField] float m_MaxOnGroundTime = 2f;
         [SerializeField] int m_MaxHP = 5;
+        [SerializeField] float m_ImmunedTime = 3f;
+        [SerializeField] float m_BlinkInterval = 0.1f;
 
         Rigidbody m_Rigidbody;
         Animator m_Animator;
@@ -39,11 +41,70 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         // Custom Variables
         short jumpCombo = 0;
         float onGroundTime = 0f;
-        int currentHP = 3;
+        float currentHP = 3;
+        Renderer[] playerRenderers;
+        float currentImmunedTime = 0;
+        float blinkTime = 0;
+        Collider playerCollider;
+        private GameObject gameOverMenu;
 
-        public GameObject gameOverMenu;
+        private void enablePlayerRenderers(bool isEnabled)
+        {
+            foreach (Renderer renderer in playerRenderers)
+            {
+                renderer.enabled = isEnabled;
+            }
+        }
 
+        private bool takeDamage(float damage)
+        {
+            if (currentImmunedTime <= 0)
+            {
+                currentHP = currentHP - damage;
+                currentImmunedTime = m_ImmunedTime;
+                if (currentHP <= 0)
+                {
+                    Debug.Log("Player is dead.");
+                    gameOver();
+                }
+                else
+                {
+                    Debug.Log("Player still alive.");
+                }
+                return true;
+            }
+            return false;
+        }
+        private void heal(float amount)
+        {
+            currentHP += amount;
+            if (currentHP > m_MaxHP)
+            {
+                currentHP = m_MaxHP;
+            }
+        }
+        private void gameOver()
+        {
+            gameOverMenu.SetActive(true);
+        }
 
+        private void blinkPlayer()
+        {
+            if (currentImmunedTime > 0)
+            {
+                currentImmunedTime -= Time.deltaTime;
+                blinkTime -= Time.deltaTime;
+                if (blinkTime <= 0)
+                {
+                    blinkTime = m_BlinkInterval;
+                    enablePlayerRenderers(!playerRenderers[0].enabled);
+                }
+                if (currentImmunedTime <= 0)
+                {
+                    enablePlayerRenderers(true);
+                }
+            }
+        }
 
         void Start()
         {
@@ -55,6 +116,9 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 
             m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
             m_OrigGroundCheckDistance = m_GroundCheckDistance;
+
+            playerRenderers = GetComponentsInChildren<Renderer>();
+            playerCollider = GetComponent<Collider>();
         }
 
 
@@ -252,6 +316,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
                 m_Animator.applyRootMotion = false;
             }
         }
+
         void Update()
         {
             onGroundTime += Time.deltaTime;
@@ -260,44 +325,18 @@ namespace UnityStandardAssets.Characters.ThirdPerson
                 jumpCombo = 0;
                 // onGroundTime = 0;
             }
+            blinkPlayer();
         }
+
         void OnCollisionEnter(Collision collision)
         {
             if (collision.gameObject.tag == "Enemy")
             {
-                currentHP = currentHP - 1;
-                if (currentHP <= 0)
-                {
-                    Debug.Log("Player is dead.");
-                    GameOver();
-                }
-                else
-                {
-                    Debug.Log("Player still alive.");
-                }
+                takeDamage(1);
             }
             else if (collision.gameObject.tag == "Mushroom")
             {
-                Debug.Log("HEALED");
-                Heal(1);
-                Destroy(collision.gameObject);
-            }
-        }
-        void GameOver()
-        {
-            if (currentHP <= 0)
-            {
-                gameOverMenu.SetActive(true);
-                Destroy(GameObject.FindWithTag("Player"));
-            }
-        }
-        void Heal(int amount)
-        {
-            currentHP += amount;
-            Debug.Log(currentHP);
-            if (currentHP > m_MaxHP)
-            {
-                currentHP = m_MaxHP;
+                heal(1);
             }
         }
     }
