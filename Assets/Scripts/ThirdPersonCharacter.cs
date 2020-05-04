@@ -337,9 +337,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             }
             else if (collision.gameObject.tag == "Mushroom")
             {
-                Destroy(collision.gameObject);
                 Debug.Log(currentHP);
-                heal(1);
             }
         }
     }
