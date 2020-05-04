@@ -46,7 +46,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         float currentImmunedTime = 0;
         float blinkTime = 0;
         Collider playerCollider;
-        private GameObject gameOverMenu;
+        public GameObject gameOverMenu;
 
         private void enablePlayerRenderers(bool isEnabled)
         {
@@ -86,6 +86,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         private void gameOver()
         {
             gameOverMenu.SetActive(true);
+            Destroy(GameObject.FindWithTag("Player"));
         }
 
         private void blinkPlayer()
@@ -336,6 +337,8 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             }
             else if (collision.gameObject.tag == "Mushroom")
             {
+                Destroy(collision.gameObject);
+                Debug.Log(currentHP);
                 heal(1);
             }
         }
