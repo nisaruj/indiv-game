@@ -47,6 +47,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         float blinkTime = 0;
         Collider playerCollider;
         public GameObject gameOverMenu;
+        public int coinAmount;
 
         private void enablePlayerRenderers(bool isEnabled)
         {
@@ -341,6 +342,11 @@ namespace UnityStandardAssets.Characters.ThirdPerson
                 Debug.Log(currentHP);
                 heal(1);
             }
+        }
+
+        public void addCoin(int amount)
+        {
+            coinAmount += amount;
         }
     }
 }

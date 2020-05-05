@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityStandardAssets.Characters.ThirdPerson;
 
 public class Coin : Obtainable
 {
@@ -8,7 +9,8 @@ public class Coin : Obtainable
 
     public override void onObtain(GameObject player) 
     {
-        Debug.Log("Obtained");
+        ThirdPersonCharacter tpCharacter = player.GetComponent<ThirdPersonCharacter>();
+        tpCharacter.addCoin(1);
     }
 
     public void Update() 
