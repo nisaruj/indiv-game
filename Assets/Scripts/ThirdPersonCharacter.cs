@@ -41,7 +41,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         // Custom Variables
         short jumpCombo = 0;
         float onGroundTime = 0f;
-        float currentHP = 3;
+        public int currentHP = 3;
         Renderer[] playerRenderers;
         float currentImmunedTime = 0;
         float blinkTime = 0;
@@ -57,7 +57,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             }
         }
 
-        private bool takeDamage(float damage)
+        private bool takeDamage(int damage)
         {
             if (currentImmunedTime <= 0)
             {
@@ -76,7 +76,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             }
             return false;
         }
-        private void heal(float amount)
+        private void heal(int amount)
         {
             currentHP += amount;
             if (currentHP > m_MaxHP)
