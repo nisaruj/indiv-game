@@ -41,13 +41,15 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         // Custom Variables
         short jumpCombo = 0;
         float onGroundTime = 0f;
-        public int currentHP = 3;
+        public int currentHP;
         Renderer[] playerRenderers;
         float currentImmunedTime = 0;
         float blinkTime = 0;
         Collider playerCollider;
         public GameObject gameOverMenu;
         public int coinAmount;
+        public float characterRatio;
+        float[] scaleMapping = { 0f, 0.5f, 0.75f, 1f, 1.25f, 1.5f };
 
         private void enablePlayerRenderers(bool isEnabled)
         {
@@ -71,18 +73,20 @@ namespace UnityStandardAssets.Characters.ThirdPerson
                 else
                 {
                     Debug.Log("Player still alive.");
+                    scalingCharacter(currentHP);
                 }
                 return true;
             }
             return false;
         }
-        private void heal(int amount)
+        public void heal(int amount)
         {
             currentHP += amount;
             if (currentHP > m_MaxHP)
             {
                 currentHP = m_MaxHP;
             }
+            scalingCharacter(currentHP);
         }
         private void gameOver()
         {
@@ -108,8 +112,18 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             }
         }
 
+        private void scalingCharacter(int amount)
+        {
+            if (amount > m_MaxHP) return;
+            characterRatio = (float)scaleMapping[amount];
+            transform.localScale = new Vector3(characterRatio, characterRatio, characterRatio);
+            Debug.Log(currentHP);
+            return;
+        }
+
         void Start()
         {
+            currentHP = 3;
             m_Animator = GetComponent<Animator>();
             m_Rigidbody = GetComponent<Rigidbody>();
             m_Capsule = GetComponent<CapsuleCollider>();
@@ -335,10 +349,6 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             if (collision.gameObject.tag == "Enemy")
             {
                 takeDamage(1);
-            }
-            else if (collision.gameObject.tag == "Mushroom")
-            {
-                Debug.Log(currentHP);
             }
         }
 
