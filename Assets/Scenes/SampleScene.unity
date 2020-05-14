@@ -588,12 +588,13 @@ MonoBehaviour:
   m_BeforeJumpSpeedMultiplier: 0.6
   m_SuperJumpMultiplier: 2
   m_MaxOnGroundTime: 2
-  m_MaxHP: 3
+  m_MaxHP: 5
   m_ImmunedTime: 3
   m_BlinkInterval: 0.1
   currentHP: 3
   gameOverMenu: {fileID: 86606404}
   coinAmount: 0
+  characterRatio: 0
 --- !u!136 &276342576
 CapsuleCollider:
   m_ObjectHideFlags: 0
