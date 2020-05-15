@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityStandardAssets.Characters.ThirdPerson;
 public class Mushroom : Obtainable
 {
     public override void onObtain(GameObject player)
     {
-        Debug.Log("Healed");
-        player.SendMessage("heal", 1.0f);
+        ThirdPersonCharacter tpCharacter = player.GetComponent<ThirdPersonCharacter>();
+        tpCharacter.heal(1);
     }
 
     public void Update()
