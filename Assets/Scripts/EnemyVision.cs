@@ -20,7 +20,7 @@ public class EnemyVision : MonoBehaviour
     private int currentHP = 3;
 
     // Start is called before the first frame update
-    void Start()
+    protected void Start()
     {
         player = GameObject.FindWithTag("Player");
         if (player != null)
@@ -30,7 +30,7 @@ public class EnemyVision : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    protected void Update()
     {
         toPlayer = player.transform.position - transform.position;
         toPlayer.y = 0;
